@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "target": "ES6",                // Compilar a ES6 (es recomendable)
+      "module": "CommonJS",           // Usar el módulo común de Node.js
+      "strict": true,                 // Habilitar la verificación estricta
+      "esModuleInterop": true,        // Necesario para importar correctamente los módulos de Node.js
+      "skipLibCheck": true,           // Evitar problemas con definiciones de tipo
+      "forceConsistentCasingInFileNames": true
+    },
+    "include": [
+      "tests/**/*.ts",
+      "tests/**/*.spec.ts"                 // Incluir todos los archivos .ts dentro de tests
+    ]
+  }
+  
