@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "playwright test",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "playwright test --reporter=html,junit"
   },
   "keywords": [],
   "author": "",
