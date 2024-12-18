@@ -2,8 +2,10 @@ import * as xlsx from 'xlsx';
 
 // Define la interfaz en el mismo archivo
 interface DatosExcel {
-  ID: string | number;
-  Password: string;
+  username: string;
+  password: string;
+  testdata_identifier: string;
+  [key: string]: any; // Esto permite acceso dinámico, si es necesario
 }
 
 export function leerDatosDesdeExcel(rutaArchivo: string, nombreHoja: string, idBuscado: string | number): DatosExcel | undefined {
