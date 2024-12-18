@@ -12,6 +12,7 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  timeout: 120_000,
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -29,7 +30,7 @@ export default defineConfig({
      baseURL: 'https://testing-env.attainia.cloud/login',
     headless: false,
     launchOptions:{
-      slowMo: 3000
+      slowMo: 1000
     },
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',

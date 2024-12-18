@@ -4,7 +4,6 @@ import { leerDatosDesdeExcel } from './Utilities/readExcel';
 // Read Data from Spreadsheet using /Utilities/ReadExcel.ts
 const idBuscado='TD_001';
 const datos = leerDatosDesdeExcel('./Data/TestData.xlsx', 'password',idBuscado);
-
   
   test('Login Atania and switch organization', async ({ page }) => {  
       if(datos){
@@ -25,12 +24,20 @@ const datos = leerDatosDesdeExcel('./Data/TestData.xlsx', 'password',idBuscado);
         await expect(page.locator('#toolbar')).toContainText('Attainia');
         await page.locator('[data-test="avatar"]').click();
 
-        await expect(page.getByText('Provider Test Organization'));
+        // await expect(page.getByText('Provider Test Organization'));
         await page.getByText('Provider Test Organization').click();
 
         await expect(page.getByRole('dialog')).toContainText('Switch Organization');
-        await page.getByLabel('Password').click();
-        await page.getByLabel('Password').fill(`${datos.password}`);
+
+          // Espera a que el modal esté visible
+        await page.waitForSelector('//*[@class="v-card v-sheet theme--light"]', { state: 'visible' }); 
+
+        // Espera a que el campo de texto esté visible y listo para interactuar
+        const inputField = await page.waitForSelector('//input[@id="password"]', { state: 'visible' }); 
+
+        const pass2= `${datos.password}`;
+        await inputField.fill(pass2);
+
         await page.getByRole('button', { name: 'Switch' }).click();
 
       }else{
@@ -38,3 +45,6 @@ const datos = leerDatosDesdeExcel('./Data/TestData.xlsx', 'password',idBuscado);
       }
         
     });
+
+
+
