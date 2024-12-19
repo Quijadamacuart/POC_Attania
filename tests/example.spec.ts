@@ -1,50 +1,51 @@
 import { test, expect } from '@playwright/test';
 import { leerDatosDesdeExcel } from './Utilities/readExcel';
 
-// Read Data from Spreadsheet using /Utilities/ReadExcel.ts
-const idBuscado='TD_001';
-const datos = leerDatosDesdeExcel('./Data/TestData.xlsx', 'password',idBuscado);
-  
-  test('Login Atania and switch organization', async ({ page }) => {  
-      if(datos){
-        await page.goto('/pagina');
-        // Verify Page's Tittle
-        await expect(page).toHaveTitle('PLAN-IT');
+// ID de los datos buscados en el archivo Excel
+const idBuscado = 'TD_001';
 
-        //Login 
-        await page.getByLabel('Email').click();
-        await page.getByLabel('Email').fill(`${datos.username}`);
+// Prueba principal
+test('Login Atania and switch organization', async ({ page }) => {
+    try {
+        // Leer datos desde el archivo Excel
+        const datos = leerDatosDesdeExcel('./Data/TestData.xlsx', 'password', idBuscado);
 
-        await page.getByLabel('Password', { exact: true }).click();
-        await page.getByLabel('Password', { exact: true }).fill(`${datos.password}`);
-        
-        await page.locator('[data-test="login"]').click();
+        if (datos) {
+            // Navegar a la página principal
+            await page.goto('/pagina');
+            await expect(page).toHaveTitle('PLAN-IT');
 
-        //Switch Organization
-        await expect(page.locator('#toolbar')).toContainText('Attainia');
-        await page.locator('[data-test="avatar"]').click();
+            // Login
+            await page.getByLabel('Email').click();
+            await page.getByLabel('Email').fill(datos.username);
 
-        // await expect(page.getByText('Provider Test Organization'));
-        await page.getByText('Provider Test Organization').click();
+            await page.getByLabel('Password', { exact: true }).click();
+            await page.getByLabel('Password', { exact: true }).fill(datos.password);
 
-        await expect(page.getByRole('dialog')).toContainText('Switch Organization');
+            await page.locator('[data-test="login"]').click();
 
-          // Espera a que el modal esté visible
-        await page.waitForSelector('//*[@class="v-card v-sheet theme--light"]', { state: 'visible' }); 
+            // Switch Organization
+            await expect(page.locator('#toolbar')).toContainText('Attainia');
+            await page.locator('[data-test="avatar"]').click();
 
-        // Espera a que el campo de texto esté visible y listo para interactuar
-        const inputField = await page.waitForSelector('//input[@id="password"]', { state: 'visible' }); 
+            await page.getByText('Provider Test Organization').click();
+            await expect(page.getByRole('dialog')).toContainText('Switch Organization');
 
-        const pass2= `${datos.password}`;
-        await inputField.fill(pass2);
+            // Espera y rellena el modal
+            await page.waitForSelector('//*[@class="v-card v-sheet theme--light"]', { state: 'visible' });
+            const inputField = await page.waitForSelector('//input[@id="password"]', { state: 'visible' });
+            await inputField.fill(datos.password);
 
-        await page.getByRole('button', { name: 'Switch' }).click();
+            await page.getByRole('button', { name: 'Switch' }).click();
+        } else {
+            console.error(`No se encontró la fila con el ID "${idBuscado}". Verifica los datos en el archivo Excel.`);
+        }
+    } catch (error) {
+        console.error('Se produjo un error durante la ejecución de la prueba:', error);
+        throw error; // Vuelve a lanzar el error para que Playwright lo registre
+    }
+});
 
-      }else{
-        console.error(`No se encontró la fila con el ID ${idBuscado}`);
-      }
-        
-    });
 
 
 
